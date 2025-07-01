@@ -121,9 +121,11 @@ public sealed class CanBus : IDisposable
                 rx.DATA[1] == 0x20 && rx.DATA[2] == 0x60)
             {
                 uint val = BitConverter.ToUInt32(rx.DATA, 4);
-                // Skip underflow pattern (0xFFFFFxxx)
-                if (val >= 0xFFFFFFF0) return (false, 0);
+                // treat underflow as position==0, but still “ok”
+                if (val >= 0xFFFFFFF0)
+                    val = 0;
                 return (true, val);
+
             }
         }
         return (false, 0);

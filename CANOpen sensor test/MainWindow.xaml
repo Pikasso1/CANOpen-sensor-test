@@ -5,12 +5,29 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:CANOpen_sensor_test"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        xmlns:wpfplot="clr-namespace:ScottPlot.WPF;assembly=ScottPlot.WPF"
+        Title="SGH-25 Test Bench" Height="450" Width="800">
+    
+    <!-- 2-row layout -->
     <Grid>
-        <Label x:Name="LatestLabel"
-       FontSize="36"
-       HorizontalAlignment="Center"
-       VerticalAlignment="Center"
-       Content="Waiting…" />
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <!-- numeric read-out -->
+            <RowDefinition Height="*"/>
+            <!-- graph -->
+        </Grid.RowDefinitions>
+
+        <!-- big number -->
+        <TextBlock x:Name="LatestLabel"
+                   FontSize="48"
+                   FontWeight="Bold"
+                   HorizontalAlignment="Center"
+                   Margin="0,10"
+                   Text="---"/>
+
+        <!-- scrolling graph -->
+        <wpfplot:WpfPlot x:Name="Plot"
+                         Grid.Row="1"
+                         Margin="10"/>
     </Grid>
 </Window>
