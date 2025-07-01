@@ -12,20 +12,30 @@ public partial class MainWindow
         Loaded += MainWindow_Loaded;
     }
 
-    private void MainWindow_Loaded(object sender, RoutedEventArgs e)
+    private async void MainWindow_Loaded(object sender, RoutedEventArgs e)
     {
         try
         {
             using var bus = new CanBus();
-            bus.Open(listenOnly: true);   // safe, RX-only
-            bus.SmokeTestEcho();          // optional dummy TX
-            MessageBox.Show("PCAN-USB channel opened OK ✔",
-                            "Smoke-test", MessageBoxButton.OK);
+            bus.Open();                       // TX enabled, normal mode
+
+            // quick await so UI thread stays responsive
+            uint? devType = await Task.Run(() => bus.ReadDeviceType());
+
+            if (devType is uint v)
+                MessageBox.Show($"Device Type 0x{v:X8} detected ✔",
+                                "CAN-open Ping", MessageBoxButton.OK,
+                                MessageBoxImage.Information);
+            else
+                MessageBox.Show("Sensor did not respond within 1 s ❌",
+                                "CAN-open Ping", MessageBoxButton.OK,
+                                MessageBoxImage.Warning);
         }
         catch (Exception ex)
         {
-            MessageBox.Show(ex.Message, "CAN error", MessageBoxButton.OK,
+            MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK,
                             MessageBoxImage.Error);
         }
     }
+
 }
