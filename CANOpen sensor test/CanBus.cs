@@ -71,4 +71,62 @@ public sealed class CanBus : IDisposable
         if (_open) PCANBasic.Uninitialize(_chan);
         _open = false;
     }
+
+    // CanBus.cs  (add below existing methods)
+    public event Action<uint> PositionReceived = delegate { };   // fired on every read
+    private CancellationTokenSource? _cts;
+
+    public void StartPolling(int intervalMs = 10)
+    {
+        if (_cts is not null) throw new InvalidOperationException("Already polling");
+        _cts = new();
+        Task.Run(async () =>
+        {
+            while (!_cts.Token.IsCancellationRequested)
+            {
+                var (ok, val) = ReadPositionOnce();   // SDO 0x6020:01
+                if (ok) PositionReceived(val);
+                await Task.Delay(intervalMs, _cts.Token);
+            }
+        }, _cts.Token);
+    }
+
+    public void StopPolling()
+    {
+        _cts?.Cancel();
+        _cts = null;
+    }
+
+    /// <returns>(true,value) if reply arrived, else (false,0)</returns>
+    private (bool ok, uint value) ReadPositionOnce()
+    {
+        // SDO read idx 0x6020 sub 01
+        var req = new TPCANMsg
+        {
+            ID = 0x601,
+            LEN = 8,
+            MSGTYPE = TPCANMessageType.PCAN_MESSAGE_STANDARD,
+            DATA = new byte[8] { 0x40, 0x20, 0x60, 0x01, 0, 0, 0, 0 }
+        };
+        PCANBasic.Write(_chan, ref req);
+
+        var deadline = Environment.TickCount64 + 10;               // 10 ms timeout
+        while (Environment.TickCount64 < deadline)
+        {
+            var sts = PCANBasic.Read(_chan, out TPCANMsg rx, out _);
+            if (sts == TPCANStatus.PCAN_ERROR_QRCVEMPTY) continue;
+            if (sts != TPCANStatus.PCAN_ERROR_OK) break;
+
+            if (rx.ID == 0x581 && rx.DATA[0] == 0x43 &&
+                rx.DATA[1] == 0x20 && rx.DATA[2] == 0x60)
+            {
+                uint val = BitConverter.ToUInt32(rx.DATA, 4);
+                // Skip underflow pattern (0xFFFFFxxx)
+                if (val >= 0xFFFFFFF0) return (false, 0);
+                return (true, val);
+            }
+        }
+        return (false, 0);
+    }
+
 }
