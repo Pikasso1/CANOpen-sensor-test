@@ -1,0 +1,14 @@
+{
+  "devices": {
+    "0x000A0196": {
+      "description": "SIKO SGH25 draw-wire encoder",
+      "range_mm": 2500,
+      "total_steps": 26560
+    },
+    "0xFFFFFFFF": {
+      "description": "AS TestSensor",
+      "range_mm": 500,
+      "total_steps": 10000
+    }
+  }
+}
