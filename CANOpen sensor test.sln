@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36203.30 d17.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CANOpen sensor test", "CANOpen sensor test\CANOpen sensor test.csproj", "{5E2A428C-BB9A-4D99-9C09-04CFF78CD581}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5E2A428C-BB9A-4D99-9C09-04CFF78CD581}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5E2A428C-BB9A-4D99-9C09-04CFF78CD581}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5E2A428C-BB9A-4D99-9C09-04CFF78CD581}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5E2A428C-BB9A-4D99-9C09-04CFF78CD581}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {E4C4664C-A87C-4D8B-843C-12965EDBB2FC}
+	EndGlobalSection
+EndGlobal
