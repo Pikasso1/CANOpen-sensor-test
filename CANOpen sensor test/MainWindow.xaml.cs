@@ -11,7 +11,7 @@ namespace CANOpen_sensor_test;
 public partial class MainWindow : Window
 {
     // ── fields ─────────────────────────────────────────
-    private readonly uint[] _ring = new uint[5000];   // circular buffer
+    private readonly uint[] _ring = new uint[10000];   // circular buffer
     private int _head;
     private StreamWriter? _log;
     private CanBus? _bus;
