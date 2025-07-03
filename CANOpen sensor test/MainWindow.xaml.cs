@@ -107,21 +107,18 @@ public partial class MainWindow : Window
     /// <summary>Return the ring buffer so oldest is first, newest is last.</summary>
     private double[] RingInChronoOrder()
     {
-        // head points to next write pos (newest+1). Oldest == head.
-        // copy into a new double[] for ScottPlot
-        double[] ordered = new double[_ring.Length];
-        int idx = 0;
+        int head = _head;                        // snapshot – no race after this
+        int len = _ring.Length;
 
-        // copy [head … end)
-        for (int i = _head; i < _ring.Length; i++)
-            ordered[idx++] = _ring[i];
+        double[] ordered = new double[len];
 
-        // copy [0 … head)
-        for (int i = 0; i < _head; i++)
-            ordered[idx++] = _ring[i];
+        int tailCount = len - head;              // from head → end
+        Array.Copy(_ring, head, ordered, 0, tailCount);
 
+        Array.Copy(_ring, 0, ordered, tailCount, head); // from 0 → head-1
         return ordered;
     }
+
 
 
     // ── called on each SDO read ───────────────────────
